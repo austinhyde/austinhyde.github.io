@@ -20,5 +20,6 @@ This isn't perfect by far. Aside from actually posting things and finish putting
 * Add pagination
 * Add better tags navigation
 * Clean up styling on small-width screens
+* Add RSS/Atom feeds
 
 And hey! I'm hosting this on GitHub, so if you have suggestions or problems, feel free to open a pull request or issue!
