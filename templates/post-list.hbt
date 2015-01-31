@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{title}} | Austin Hyde</title>
+  <link href="/css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body class="posts">
+  {{>header}}
+  <div class="contents">
+  {{#if type}}
+    <h1>All {{type}}</h1>
+    <dl class="post-list">
+    {{#each (lookup collections type)}}
+      <dt><a href="{{link path}}">{{title}}</a>{{#if date}} &mdash; <span class="date">{{formatDate date}}</span>{{/if}}</dt>
+      <dd>
+        {{{excerpt}}}
+      </dd>
+    {{/each}}
+    </dl>
+  {{/if}}
+  {{#if tag}}
+    <h1>All {{tag}} posts</h1>
+    <dl class="post-list">
+    {{#each posts}}
+      <dt><a href="{{link path}}">{{title}}</a></dt>
+      <dd>{{{excerpt}}}</dd>
+    {{/each}}
+    </dl>
+  {{/if}}
+  {{>footer}}
+</body>
+</html>

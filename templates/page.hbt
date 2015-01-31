@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{#title}}{{.}} |{{/title}} Austin Hyde</title>
+  <link href="/css/main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+{{>header}}
+<div class="contents">
+{{{contents}}}
+</div>
+{{>footer}}
+</body>
+</html>

@@ -1,0 +1,12 @@
+<div class="header">
+  <a class="brand" href="/">Austin Hyde</a>
+  <ul class="nav">
+    <li class="{{activePage 'posts'}}"><a href="/posts/">Blog</a></li>
+    <li class="{{activePage 'projects'}}"><a href="/projects/">Projects</a></li>
+    <li class="{{activePage 'about'}}"><a href="/about/">About</a></li>
+  </ul>
+  <ul class="links">
+    <li class="github"><a href="https://github.com/austinhyde">GitHub</a></li>
+    <li class="twitter"><a href="https://twitter.com/coloredsyntax">Twitter</a></li>
+  </ul>
+</div>
