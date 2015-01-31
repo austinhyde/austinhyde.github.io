@@ -78,6 +78,9 @@ Metalsmith(__dirname)
       },
       or: function() {
         return _.any(arguments);
+      },
+      setAndFalse: function(x) {
+        return x === false;
       }
     }
   }))
