@@ -1,0 +1,241 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300);
+// @import url(http://fonts.googleapis.com/css?family=Share+Tech+Mono);
+@import url(http://fonts.googleapis.com/css?family=Bitter:400,700);
+
+@pre-bg: #f5f5f5;
+@pre-fg: #000000;
+@min-width: 600px;
+@content-max-width: 1000px;
+@content-vmargin: 20px;
+@content-hpadding: 10px;
+@header-width: 220px;
+@header-breakpoint: (@content-max-width + (@header-width*2));
+@header-bgcolor: #3987B6;
+@header-fgcolor: #ffffff;
+
+@link-color: #82addc;
+@link-color-active: #6e6cd3;
+@link-color-hover: #5b7eaa;
+
+// Source: http://nicolasgallagher.com/micro-clearfix-hack/
+.clearfix() {
+  &:before,
+  &:after {
+    content: " "; // 1
+    display: table; // 2
+  }
+  &:after {
+    clear: both;
+  }
+}
+// Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
+.hide-text() {
+  font: ~"0/0" a;
+  // color: transparent;
+  text-shadow: none;
+  // background-color: transparent;
+  border: 0;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Open Sans', Helvetica, 'Lucida Grande', Arial, sans-serif;
+  font-weight: 300;
+}
+ul {
+  list-style-type: circle;
+}
+a {
+  color: @link-color;
+  text-decoration: none;
+  &:visited {
+    color: @link-color-active;
+  }
+  &:hover {
+    color: @link-color-hover;
+    text-decoration: underline;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Bitter;
+}
+
+hr {
+  width: @content-max-width;
+  border: none;
+  border-top: 1px solid #d0d0d0;
+}
+
+.header {
+  .clearfix;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: @content-max-width;
+  margin: 0 auto;
+  padding: 10px;
+  font-family: Bitter;
+  border-bottom: 1px solid #EEEEEE;
+
+  a {
+    color: #000000;
+  }
+
+  .brand {
+    display: inline-block;
+    margin: 0;
+    font-weight: bold;
+    font-size: 2em;
+  }
+
+  .nav {
+    list-style: none;
+    display: inline-block;
+    width: auto;
+    padding: 0;
+    margin: 0;
+    margin-left: 20px;
+    font-size: 28px;
+
+    li {
+      display: inline-block;
+      margin: 0 10px;
+      a {
+        display: inline;
+        text-align: left;
+      }
+    }
+    li.active {
+      a:after {
+        content: ' «';
+      }
+      a:before {
+        content: '» ';
+      }
+    }
+  }
+
+  .links {
+    float: right;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: inline-block;
+      margin: 8px 16px;
+      vertical-align: middle;
+    }
+
+    a {
+      .hide-text;
+      display: block;
+      width: 32px;
+      height: 32px;
+      background-size: 32px 32px;
+    }
+
+    .github a {
+      background-image: url('../img/GitHub-Mark-120px-plus.png');
+    }
+    .twitter a {
+      background-image: url('../img/Twitter_logo_blue.png');
+    }
+  }
+}
+
+.contents {
+  pre {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: @pre-bg;
+    color: @pre-fg;
+    margin: @content-vmargin 0;
+    padding: 10px 0;
+
+    code {
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: @content-max-width;
+      margin: 0 auto;
+      padding: 0 @content-hpadding;
+      font-family: 'Source Code Pro', Monaco, Consolas, monospace, monospace;
+      font-size: 1.05em;
+    }
+  }
+
+  p, h1, h2, h3, h4, h5, h6, ul, ol, dl {
+    width: 100%;
+    max-width: @content-max-width;
+    margin: @content-vmargin auto;
+    box-sizing: border-box;
+    padding: 0 @content-hpadding;
+  }
+
+  ul, ol {
+    padding: 0 45px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 16px;
+    &:first-child {
+      margin-top: 8px;
+    }
+  }
+
+  p code {
+    background-color: #f8f8f8;
+    border: 1px solid #eeeeee;
+    border-radius: 2px;
+    padding: 0 3px;
+  }
+}
+
+.post .contents .post-data {
+  .clearfix;
+  max-width: @content-max-width;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 10px;
+
+  .date {
+    float: left;
+    font-style: italic;
+  }
+  .tags {
+    float: right;
+    margin: 0;
+    padding: 0 10px;
+    text-align: right;
+    width: auto;
+    max-width: none;
+
+    li {
+      display: inline-block;
+      margin-left: 7px;
+    }
+    a {
+      text-decoration: none;
+      font-style: italic;
+    }
+  }
+}
+
+.post-list .date {
+  font-size: .8em;
+  font-style: italic;
+}
+
+#disqus_thread {
+  width: 100%;
+  max-width: @content-max-width;
+  margin: 10px auto;
+}
+
+.footer {
+  padding: 20px;
+  font-size: .8em;
+  text-align: right;
+}

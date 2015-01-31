@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DBSteward | Austin Hyde</title>
+  <link href="/css/main.css" rel="stylesheet" type="text/css">
+  <link href="/css/code.css" rel="stylesheet" type="text/css">
+</head>
+<body class="post">
+  <div class="header">
+    <a class="brand" href="/">Austin Hyde</a>
+    <ul class="nav">
+      <li class=""><a href="/posts/">Blog</a></li>
+      <li class="active"><a href="/projects/">Projects</a></li>
+      <li class=""><a href="/about/">About</a></li>
+    </ul>
+    <ul class="links">
+      <li class="github"><a href="https://github.com/austinhyde">GitHub</a></li>
+      <li class="twitter"><a href="https://twitter.com/coloredsyntax">Twitter</a></li>
+    </ul>
+  </div>  <div class="contents">
+    <h1>DBSteward</h1>
+    <div class="post-data">
+      
+      <ul class="tags">
+      </ul>
+    </div>
+
+    <p>DBSteward is a database change management tool, allowing developers to define and version the <em>current</em> state of the database, rather than an initial state and deltas like most database migration solutions.</p>
+<p>DBSteward can either build a fresh database, or compute the DDL/DML necessary to upgrade a database from one version to another while maintaining as much data integrity as possible. DBSteward is primarily compatible with PostgreSQL and MySQL, with partial support for MS SQL Server.</p>
+<p>Code: <a href="https://github.com/nkiraly/DBSteward">On GitHub</a><br>Package: <a href="https://packagist.org/packages/nkiraly/dbsteward">On Packagist</a> and <a href="http://pear.dbsteward.org/">PEAR</a></p>
+<h2 id="my-role">My Role</h2>
+<p>I originally implemented most of the MySQL driver for DBSteward, and now develop new features, make various improvements, and fix bugs.</p>
+<h2 id="technology">Technology</h2>
+<p>DBSteward is written in PHP, consumes XML, and outputs MySQL, PostgreSQL, and MSSQL compatible SQL.</p>
+<h2 id="example">Example</h2>
+<p>For example, given the following minimal XML definition:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-title">dbsteward</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">database</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">role</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">application</span>&gt;</span>someapp<span class="hljs-tag">&lt;/<span class="hljs-title">application</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">owner</span>&gt;</span>deployment<span class="hljs-tag">&lt;/<span class="hljs-title">owner</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">replication</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">replication</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">readonly</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">readonly</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">role</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">database</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">schema</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"public"</span> <span class="hljs-attribute">owner</span>=<span class="hljs-value">"ROLE_OWNER"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">table</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"users"</span> <span class="hljs-attribute">owner</span>=<span class="hljs-value">"ROLE_OWNER"</span> <span class="hljs-attribute">primaryKey</span>=<span class="hljs-value">"user_id"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">column</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"user_id"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"serial"</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">column</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"user_name"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"varchar(100)"</span> <span class="hljs-attribute">null</span>=<span class="hljs-value">"false"</span> <span class="hljs-attribute">unique</span>=<span class="hljs-value">"true"</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">grant</span> <span class="hljs-attribute">role</span>=<span class="hljs-value">"ROLE_APPLICATION"</span> <span class="hljs-attribute">operation</span>=<span class="hljs-value">"SELECT,INSERT,UPDATE,DELETE"</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">table</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">grant</span> <span class="hljs-attribute">role</span>=<span class="hljs-value">"ROLE_APPLICATION"</span> <span class="hljs-attribute">operation</span>=<span class="hljs-value">"USAGE"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">schema</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">dbsteward</span>&gt;</span>
+</code></pre>
+<p>DBSteward will generate the corresponding PostgreSQL-flavored DDL:</p>
+<pre><code class="lang-sql"><span class="hljs-operator"><span class="hljs-keyword">BEGIN</span>;</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">USAGE</span> <span class="hljs-keyword">ON</span> <span class="hljs-keyword">SCHEMA</span> <span class="hljs-keyword">public</span> <span class="hljs-keyword">TO</span> someapp;</span>
+<span class="hljs-operator"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">public</span>.users (
+  user_id <span class="hljs-built_in">serial</span>,
+  user_name <span class="hljs-built_in">varchar</span>(<span class="hljs-number">100</span>)
+);</span>
+<span class="hljs-operator"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">public</span>.users OWNER <span class="hljs-keyword">TO</span> deployment;</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">public</span>.users_user_id_seq OWNER <span class="hljs-keyword">TO</span> deployment;</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">UNIQUE</span> <span class="hljs-keyword">INDEX</span> users_user_name_key <span class="hljs-keyword">ON</span> <span class="hljs-keyword">public</span>.users <span class="hljs-keyword">USING</span> btree (user_name);</span>
+<span class="hljs-operator"><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">SELECT</span>, <span class="hljs-keyword">INSERT</span>, <span class="hljs-keyword">UPDATE</span>, <span class="hljs-keyword">DELETE</span> <span class="hljs-keyword">ON</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">public</span>.users <span class="hljs-keyword">TO</span> someapp;</span>
+<span class="hljs-operator"><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">SELECT</span>,<span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">ON</span> SEQUENCE <span class="hljs-keyword">public</span>.users_user_id_seq <span class="hljs-keyword">TO</span> someapp;</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">public</span>.users <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">COLUMN</span> user_name <span class="hljs-keyword">SET</span> <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>;</span>
+<span class="hljs-operator"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">public</span>.users
+  <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">CONSTRAINT</span> users_pkey <span class="hljs-keyword">PRIMARY</span> <span class="hljs-keyword">KEY</span> (user_id);</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">COMMIT</span>;</span>
+</code></pre>
+<p>Then, as you develop, suppose you want to add another column to that table, add some static data, and change an existing column:</p>
+<pre><code class="lang-xml"><span class="hljs-tag">&lt;<span class="hljs-title">table</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"users"</span> <span class="hljs-attribute">owner</span>=<span class="hljs-value">"ROLE_OWNER"</span> <span class="hljs-attribute">primaryKey</span>=<span class="hljs-value">"user_id"</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- ... --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">column</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"user_name"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"varchar(150)"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">column</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"user_bio"</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> /&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">rows</span> <span class="hljs-attribute">columns</span>=<span class="hljs-value">"user_id, user_name, user_bio"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">row</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">col</span> <span class="hljs-attribute">sql</span>=<span class="hljs-value">"true"</span>&gt;</span>DEFAULT<span class="hljs-tag">&lt;/<span class="hljs-title">col</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">col</span>&gt;</span>austin109@gmail.com<span class="hljs-tag">&lt;/<span class="hljs-title">col</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-title">col</span>&gt;</span>The creator of the app<span class="hljs-tag">&lt;/<span class="hljs-title">col</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-title">row</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">rows</span>&gt;</span>
+  <span class="hljs-comment">&lt;!-- ... --&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">table</span>&gt;</span>
+</code></pre>
+<p>Then simply checkout the previous version of the file, and tell DBSteward to diff the two. It will output the following upgrade DDL:</p>
+<pre><code class="lang-sql"><span class="hljs-operator"><span class="hljs-keyword">BEGIN</span>;</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-keyword">public</span>.users
+  <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> user_bio <span class="hljs-built_in">text</span> ,
+  <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">COLUMN</span> user_name TYPE <span class="hljs-built_in">varchar</span>(<span class="hljs-number">150</span>) <span class="hljs-comment">/* TYPE change - table: users original: varchar(100) new: varchar(150) */</span>;</span>
+<span class="hljs-operator"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-keyword">public</span>.users (user_id, user_name, user_bio) <span class="hljs-keyword">VALUES</span> (<span class="hljs-keyword">DEFAULT</span>, E<span class="hljs-string">'austin109@gmail.com'</span>, E<span class="hljs-string">'The creator of the app'</span>);</span>
+
+<span class="hljs-operator"><span class="hljs-keyword">COMMIT</span>;</span>
+</code></pre>
+
+    
+    <div class="post-data">
+      
+      <ul class="tags">
+      </ul>
+    </div>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'coloredsyntax';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  <div class="footer">
+  &copy; 2015 Austin Hyde
+  </div></body>
+</html>
