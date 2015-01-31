@@ -1,0 +1,5 @@
+@import url('/css/hljs-googlecode.css');
+pre {
+  background-color: #f8f8f8 !important;
+  color: #000000 !important;
+}

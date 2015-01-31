@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>This Site | Austin Hyde</title>
+  <link href="/css/main.css" rel="stylesheet" type="text/css">
+  <link href="/css/code.css" rel="stylesheet" type="text/css">
+</head>
+<body class="post">
+  <div class="header">
+    <a class="brand" href="/">Austin Hyde</a>
+    <ul class="nav">
+      <li class=""><a href="/posts/">Blog</a></li>
+      <li class="active"><a href="/projects/">Projects</a></li>
+      <li class=""><a href="/about/">About</a></li>
+    </ul>
+    <ul class="links">
+      <li class="github"><a href="https://github.com/austinhyde">GitHub</a></li>
+      <li class="twitter"><a href="https://twitter.com/coloredsyntax">Twitter</a></li>
+    </ul>
+  </div>  <div class="contents">
+    <h1>This Site</h1>
+    <div class="post-data">
+      
+      <ul class="tags">
+      </ul>
+    </div>
+
+    <p>This site has been under “development” for a few years now, as I experimented with different frameworks and libraries and tools, made new opinions of things, and got sidetracked with other projects. <a href="https://i.imgur.com/WmEDOeP.jpg">You know how that goes</a>.</p>
+<p>In the last few months though, I found the <a href="http://www.metalsmith.io/">Metalsmith</a> static site generator, and, while it has its quirks, it fit the bill for what I was looking for out of an SSG - simple, keeps you in control, pluggable.</p>
+<p>It didn’t take long to get it figured out, mostly thanks to <a href="http://www.robinthrift.com/posts/getting-to-know-metalsmith/">Robin Thrift</a>. Mostly, the hard part was working out the gotchas of the various plugins, since most of them are relatively undocumented. I spent a good chunk of time source-diving these plugins, console logging, and trying to grok how <a href="https://github.com/RobinThrift/RobinThrift.com">Robin Thrift’s own site worked</a>.</p>
+<p>Code: <a href="https://github.com/austinhyde/austinhyde.github.io">On GitHub</a></p>
+<h2 id="to-do">To Do</h2>
+<p>This isn’t perfect by far. Aside from actually posting things and finish putting up write-ups of projects I’ve worked on, I still want to:</p>
+<ul>
+<li>Investigate using <a href="http://www.discourse.org/">Discourse</a> for commenting - I’m not sure I like or trust Disqus.</li>
+<li>Add ordering to the projects list</li>
+<li>Add ordering to the posts list</li>
+<li>Add pagination</li>
+<li>Add better tags navigation</li>
+<li>Clean up styling on small-width screens</li>
+<li>Add RSS/Atom feeds</li>
+</ul>
+<p>And hey! I’m hosting this on GitHub, so if you have suggestions or problems, feel free to open a pull request or issue!</p>
+
+    
+    <div class="post-data">
+      
+      <ul class="tags">
+      </ul>
+    </div>
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'coloredsyntax';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+  <div class="footer">
+  &copy; 2015 Austin Hyde
+  </div></body>
+</html>
