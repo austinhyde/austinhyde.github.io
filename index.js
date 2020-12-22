@@ -39,7 +39,7 @@ Metalsmith(__dirname)
   .use(markdown({
     smartypants: true,
     highlight: (code, lang, callback) => {
-      return hljs.highlightAuto(code).value;
+      return hljs.highlight(lang, code).value;
     }
   }))
   .use(excerpts())
