@@ -16,7 +16,6 @@
     </ul>
     <ul class="links">
       <li class="github"><a href="https://github.com/austinhyde">GitHub</a></li>
-      <li class="twitter"><a href="https://twitter.com/coloredsyntax">Twitter</a></li>
     </ul>
   </div>  <div class="contents">
     <h1>DBSteward</h1>
@@ -36,24 +35,24 @@
 <p>DBSteward is written in PHP, consumes XML, and outputs MySQL, PostgreSQL, and MSSQL compatible SQL.</p>
 <h2 id="example">Example</h2>
 <p>For example, given the following minimal XML definition:</p>
-<pre><code class="language-xml">&lt;dbsteward&gt;
-  &lt;<span class="hljs-keyword">database</span>&gt;
-    &lt;<span class="hljs-keyword">role</span>&gt;
-      &lt;application&gt;someapp&lt;/application&gt;
-      &lt;<span class="hljs-keyword">owner</span>&gt;deployment&lt;/<span class="hljs-keyword">owner</span>&gt;
-      &lt;<span class="hljs-keyword">replication</span>&gt;&lt;/<span class="hljs-keyword">replication</span>&gt;
-      &lt;readonly&gt;&lt;/readonly&gt;
-    &lt;/<span class="hljs-keyword">role</span>&gt;
-  &lt;/<span class="hljs-keyword">database</span>&gt;
-  &lt;<span class="hljs-keyword">schema</span> <span class="hljs-type">name</span>=&quot;public&quot; owner=&quot;ROLE_OWNER&quot;&gt;
-    &lt;<span class="hljs-keyword">table</span> <span class="hljs-type">name</span>=&quot;users&quot; owner=&quot;ROLE_OWNER&quot; primaryKey=&quot;user_id&quot;&gt;
-      &lt;<span class="hljs-keyword">column</span> <span class="hljs-type">name</span>=&quot;user_id&quot; <span class="hljs-keyword">type</span>=&quot;serial&quot; /&gt;
-      &lt;<span class="hljs-keyword">column</span> <span class="hljs-type">name</span>=&quot;user_name&quot; <span class="hljs-keyword">type</span>=&quot;varchar(100)&quot; <span class="hljs-keyword">null</span>=&quot;false&quot; <span class="hljs-keyword">unique</span>=&quot;true&quot; /&gt;
-      &lt;<span class="hljs-keyword">grant</span> <span class="hljs-keyword">role</span>=&quot;ROLE_APPLICATION&quot; operation=&quot;SELECT,INSERT,UPDATE,DELETE&quot; /&gt;
-    &lt;/<span class="hljs-keyword">table</span>&gt;
-    &lt;<span class="hljs-keyword">grant</span> <span class="hljs-keyword">role</span>=&quot;ROLE_APPLICATION&quot; operation=&quot;USAGE&quot; /&gt;
-  &lt;/<span class="hljs-keyword">schema</span>&gt;
-&lt;/dbsteward&gt;</code></pre>
+<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">dbsteward</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">database</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">role</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">application</span>&gt;</span>someapp<span class="hljs-tag">&lt;/<span class="hljs-name">application</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">owner</span>&gt;</span>deployment<span class="hljs-tag">&lt;/<span class="hljs-name">owner</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">replication</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">replication</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">readonly</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">readonly</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">role</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">database</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">schema</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;public&quot;</span> <span class="hljs-attr">owner</span>=<span class="hljs-string">&quot;ROLE_OWNER&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">table</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;users&quot;</span> <span class="hljs-attr">owner</span>=<span class="hljs-string">&quot;ROLE_OWNER&quot;</span> <span class="hljs-attr">primaryKey</span>=<span class="hljs-string">&quot;user_id&quot;</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">column</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;user_id&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;serial&quot;</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">column</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;user_name&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;varchar(100)&quot;</span> <span class="hljs-attr">null</span>=<span class="hljs-string">&quot;false&quot;</span> <span class="hljs-attr">unique</span>=<span class="hljs-string">&quot;true&quot;</span> /&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">grant</span> <span class="hljs-attr">role</span>=<span class="hljs-string">&quot;ROLE_APPLICATION&quot;</span> <span class="hljs-attr">operation</span>=<span class="hljs-string">&quot;SELECT,INSERT,UPDATE,DELETE&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">table</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">grant</span> <span class="hljs-attr">role</span>=<span class="hljs-string">&quot;ROLE_APPLICATION&quot;</span> <span class="hljs-attr">operation</span>=<span class="hljs-string">&quot;USAGE&quot;</span> /&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">schema</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dbsteward</span>&gt;</span></code></pre>
 <p>DBSteward will generate the corresponding PostgreSQL-flavored DDL:</p>
 <pre><code class="language-sql"><span class="hljs-keyword">BEGIN</span>;
 
@@ -88,10 +87,10 @@
 <p>Then simply checkout the previous version of the file, and tell DBSteward to diff the two. It will output the following upgrade DDL:</p>
 <pre><code class="language-sql"><span class="hljs-keyword">BEGIN</span>;
 
-<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-built_in">public</span>.users
-  <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> user_bio <span class="hljs-type">text</span> ,
-  <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">COLUMN</span> user_name <span class="hljs-keyword">TYPE</span> <span class="hljs-type">varchar</span>(<span class="hljs-number">150</span>) <span class="hljs-comment">/* TYPE change - table: users original: varchar(100) new: varchar(150) */</span>;
-<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> <span class="hljs-built_in">public</span>.users (user_id, user_name, user_bio) <span class="hljs-keyword">VALUES</span> (<span class="hljs-keyword">DEFAULT</span>, <span class="hljs-string">E&#x27;austin109@gmail.com&#x27;</span>, <span class="hljs-string">E&#x27;The creator of the app&#x27;</span>);
+<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> public.users
+  <span class="hljs-keyword">ADD</span> <span class="hljs-keyword">COLUMN</span> user_bio <span class="hljs-built_in">text</span> ,
+  <span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">COLUMN</span> user_name <span class="hljs-keyword">TYPE</span> <span class="hljs-built_in">varchar</span>(<span class="hljs-number">150</span>) <span class="hljs-comment">/* TYPE change - table: users original: varchar(100) new: varchar(150) */</span>;
+<span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> public.users (user_id, user_name, user_bio) <span class="hljs-keyword">VALUES</span> (<span class="hljs-keyword">DEFAULT</span>, E<span class="hljs-string">&#x27;austin109@gmail.com&#x27;</span>, E<span class="hljs-string">&#x27;The creator of the app&#x27;</span>);
 
 <span class="hljs-keyword">COMMIT</span>;</code></pre>
 
