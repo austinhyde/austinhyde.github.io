@@ -32,181 +32,168 @@
     <p>I’ve seen an increasingly large number of people claiming you need cutting-edge JavaScript features or fancy frameworks in order to effectively do two-way data binding. To the contrary, it’s a rather simple thing to implement, using standard features that work all the way back to IE 6!</p>
 <h2 id="observables">Observables</h2>
 <p>Let’s start basic - first and foremost, you need a way to tell when data changes. Traditionally, this is done via an <a href="http://sourcemaking.com/design_patterns/observer">Observer pattern</a>, but a full-blown implementation of that is a little clunky for nice, lightweight JavaScript. So, if native getters/setters are out, the only mechanism we have are accessors:</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> n = <span class="hljs-number">5</span>;
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getN</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> n; }
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setN</span><span class="hljs-params">(newN)</span> </span>{ n = newN; }
+<pre><code class="language-js"><span class="hljs-keyword">var</span> n = <span class="hljs-number">5</span>;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getN</span></span>() { <span class="hljs-keyword">return</span> n; }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setN</span></span>(<span class="hljs-keyword">new</span><span class="hljs-type">N</span>) { n = <span class="hljs-keyword">new</span><span class="hljs-type">N</span>; }
 
-<span class="hljs-built_in">console</span>.log(getN()); <span class="hljs-comment">// 5</span>
+console.log(getN()); <span class="hljs-comment">// 5</span>
 setN(<span class="hljs-number">10</span>);
-<span class="hljs-built_in">console</span>.log(getN()); <span class="hljs-comment">// 10</span>
-</code></pre>
+console.log(getN()); <span class="hljs-comment">// 10</span></code></pre>
 <p>That’s a little boring though, let’s rearrange that to just a single function:</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> _n = 5;
-function <span class="hljs-keyword">n</span>(<span class="hljs-keyword">n</span>) {
-  <span class="hljs-keyword">if</span> (arguments.length) _n = <span class="hljs-keyword">n</span>;
-  <span class="hljs-keyword">return</span> _n;
+<pre><code class="language-js"><span class="hljs-built_in">var</span> _<span class="hljs-built_in">n</span> = <span class="hljs-number">5</span>;
+function <span class="hljs-built_in">n</span>(<span class="hljs-comment">n</span>) {
+  <span class="hljs-built_in">if</span> (arguments.length) _<span class="hljs-built_in">n</span> = <span class="hljs-built_in">n</span>;
+  return _<span class="hljs-built_in">n</span>;
 }
 
-console.<span class="hljs-literal">log</span>(<span class="hljs-keyword">n</span>()); <span class="hljs-comment">// 5</span>
-<span class="hljs-keyword">n</span>(10);
-console.<span class="hljs-literal">log</span>(<span class="hljs-keyword">n</span>()); <span class="hljs-comment">// 10</span>
-</code></pre>
+console.log(<span class="hljs-built_in">n</span>(<span class="hljs-comment"></span>)); // <span class="hljs-number">5</span>
+<span class="hljs-built_in">n</span>(<span class="hljs-comment">10</span>);
+console.log(<span class="hljs-built_in">n</span>(<span class="hljs-comment"></span>)); // <span class="hljs-number">10</span></code></pre>
 <p>Now, suppose we want to notify stuff when the value changes…</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> _n = <span class="hljs-number">5</span>, _nListeners = [];
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">n</span><span class="hljs-params">(n)</span> </span>{
+<pre><code class="language-js"><span class="hljs-keyword">var</span> _n = <span class="hljs-number">5</span>, _nListeners = [];
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">n</span>(<span class="hljs-params">n</span>) </span>{
   <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &amp;&amp; n !== _n) {
     _n = n;
-    _nListeners.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(listener)</span> </span>{ listener(n); });
+    _nListeners.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">listener</span>) </span>{ listener(n); });
   }
   <span class="hljs-keyword">return</span> _n;
 }
-n.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(listener)</span> </span>{ _nListeners.push(listener); }
+n.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">listener</span>) </span>{ _nListeners.push(listener); }
 
 <span class="hljs-built_in">console</span>.log(n()); <span class="hljs-comment">// 5</span>
-n.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(newN)</span> </span>{ <span class="hljs-built_in">console</span>.log(newN); });
+n.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">newN</span>) </span>{ <span class="hljs-built_in">console</span>.log(newN); });
 n(<span class="hljs-number">10</span>); <span class="hljs-comment">// logs 10</span>
-n(<span class="hljs-number">10</span>); <span class="hljs-comment">// no output, value didn't change.</span>
-</code></pre>
+n(<span class="hljs-number">10</span>); <span class="hljs-comment">// no output, value didn&#x27;t change.</span></code></pre>
 <p>Note that we don’t notify subscribers that the value changed, if the value didn’t actually change!</p>
 <p>That’s a real pain in the ass if we want to be doing that a lot, so let’s wrap it up in a neat little generator function:</p>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">observable</span><span class="hljs-params">(value)</span> </span>{
+<pre><code class="language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">observable</span></span>(value) {
   <span class="hljs-keyword">var</span> listeners = [];
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">notify</span><span class="hljs-params">(newValue)</span> </span>{
-    listeners.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(listener)</span></span>{ listener(newValue); });
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">notify</span></span>(<span class="hljs-keyword">new</span><span class="hljs-type">Value</span>) {
+    listeners.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span></span>(listener){ listener(<span class="hljs-keyword">new</span><span class="hljs-type">Value</span>); });
   }
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">accessor</span><span class="hljs-params">(newValue)</span> </span>{
-    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &amp;&amp; newValue !== value) {
-      value = newValue;
-      notify(newValue);
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">accessor</span></span>(<span class="hljs-keyword">new</span><span class="hljs-type">Value</span>) {
+    <span class="hljs-keyword">if</span> (arguments.length &amp;&amp; <span class="hljs-keyword">new</span><span class="hljs-type">Value</span> !== value) {
+      value = <span class="hljs-keyword">new</span><span class="hljs-type">Value</span>;
+      notify(<span class="hljs-keyword">new</span><span class="hljs-type">Value</span>);
     }
     <span class="hljs-keyword">return</span> value;
   }
 
-  accessor.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(listener)</span> </span>{ listeners.push(listener); };
+  accessor.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span></span>(listener) { listeners.push(listener); };
 
   <span class="hljs-keyword">return</span> accessor;
 }
 
 <span class="hljs-keyword">var</span> n = observable(<span class="hljs-number">5</span>);
-n.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(newN)</span> </span>{ <span class="hljs-built_in">console</span>.log(newN); });
-n(<span class="hljs-number">10</span>); <span class="hljs-comment">// logs 10</span>
-</code></pre>
+n.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span></span>(<span class="hljs-keyword">new</span><span class="hljs-type">N</span>) { console.log(<span class="hljs-keyword">new</span><span class="hljs-type">N</span>); });
+n(<span class="hljs-number">10</span>); <span class="hljs-comment">// logs 10</span></code></pre>
 <p>Cool! Now we’re getting somewhere! Using <code>observable()</code>, we can now have as many little pre-packaged observable values as we want!</p>
 <p>The next step is learning how to combine them. Suppose we want to do some basic math and add two observables together. We can’t just do <code>c(a() + b())</code>, because <code>c</code> won’t know when <code>a</code> or <code>b</code> change - it will get set once, but that’s it. What we need to do is subscribe to changes on <code>a</code> or <code>b</code>, so that when either of them change, we update <code>c</code>:</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> a = observable(<span class="hljs-number">3</span>), b = observable(<span class="hljs-number">2</span>);
+<pre><code class="language-js">var a = observable(<span class="hljs-number">3</span>), b = observable(<span class="hljs-number">2</span>);
 
-<span class="hljs-keyword">var</span> c = observable(a() + b());
+var c = observable(a() + b());
 
-a.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{ c(a() + b()); });
-b.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{ c(a() + b()); });
+a.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{ <span class="hljs-title">c</span><span class="hljs-params">(a()</span> + <span class="hljs-title">b</span><span class="hljs-params">()</span>); });</span>
+b.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{ <span class="hljs-title">c</span><span class="hljs-params">(a()</span> + <span class="hljs-title">b</span><span class="hljs-params">()</span>); });</span>
 
-<span class="hljs-built_in">console</span>.log(c()); <span class="hljs-comment">// 5</span>
+console.<span class="hljs-built_in">log</span>(c()); <span class="hljs-comment">// 5</span>
 a(<span class="hljs-number">10</span>);
-<span class="hljs-built_in">console</span>.log(c()); <span class="hljs-comment">// 12</span>
+console.<span class="hljs-built_in">log</span>(c()); <span class="hljs-comment">// 12</span>
 b(<span class="hljs-number">7</span>);
-<span class="hljs-built_in">console</span>.log(c()); <span class="hljs-comment">// 17</span>
-</code></pre>
+console.<span class="hljs-built_in">log</span>(c()); <span class="hljs-comment">// 17</span></code></pre>
 <p>Now, if you’re feeling clever, you’ll notice that there’s a lot of repetition going on there. We can fix that by pulling out functions:</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> a = observable(<span class="hljs-number">3</span>), b = observable(<span class="hljs-number">2</span>);
+<pre><code class="language-js"><span class="hljs-keyword">var</span> a = observable(<span class="hljs-number">3</span>), b = observable(<span class="hljs-number">2</span>);
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculation</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> a() + b(); }
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">calculation</span><span class="hljs-params">()</span> <span class="hljs-comment">{ return a() + b(); }</span>
 
-<span class="hljs-keyword">var</span> c = observable(calculation());
+<span class="hljs-title">var</span> <span class="hljs-title">c</span> = <span class="hljs-title">observable</span><span class="hljs-params">(calculation()</span>);</span>
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">listener</span><span class="hljs-params">()</span> </span>{ c(calculation()); }
-a.subscribe(listener);
-b.subscribe(listener);
-</code></pre>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">listener</span><span class="hljs-params">()</span> <span class="hljs-comment">{ c(calculation()); }</span>
+<span class="hljs-title">a</span>.<span class="hljs-title">subscribe</span><span class="hljs-params">(listener)</span>;</span>
+b.subscribe(listener);</code></pre>
 <p>As it happens, updating dependent values this way turns out to be very common. In fact, it’s really the same thing as normal JavaScript operations, except in an observable way. Wouldn’t it be cool if we could automatically set up those subscriptions?</p>
 <p>Let’s start by wrapping up the boilerplate above. We need a way to calculate the value of the observable, and we need to know the observables that participate in that calculation. We’ll call this variation on an <code>observable</code> a <code>computed</code> value:</p>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">computed</span><span class="hljs-params">(calculation, dependencies)</span> </span>{
+<pre><code class="language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">computed</span><span class="hljs-params">(calculation, dependencies)</span> </span>{
   <span class="hljs-comment">// start with the initial value</span>
   <span class="hljs-keyword">var</span> value = observable(calculation());
 
   <span class="hljs-comment">// register a listener for each dependency, that updates the value</span>
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">listener</span><span class="hljs-params">()</span> </span>{ value(calculation()); }
-  dependencies.<span class="hljs-keyword">forEach</span>(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(dependency)</span> </span>{
+  dependencies.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(dependency)</span> </span>{
     dependency.subscribe(listener);
   });
 
-  <span class="hljs-comment">// now, wrap the value so that users of computed() can't manually update the value</span>
+  <span class="hljs-comment">// now, wrap the value so that users of computed() can&#x27;t manually update the value</span>
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getter</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> value(); }
   getter.subscribe = value.subscribe;
 
   <span class="hljs-keyword">return</span> getter;
-}
-</code></pre>
+}</code></pre>
 <p>Note that we wrap the observable that we’re calculating the value of in a read-only version. Because what would it mean for code to manually set the value of a calculation? If you literally say that, for example, <code>c</code> is the sum of <code>a + b</code>, it really doesn’t make much sense to come along later and set <code>c</code> to five. What happens if <code>a</code> or <code>b</code> update? They’d overwrite that value anyways. Therefore, we avoid any confusion by returning a read-only accessor.</p>
 <p>Let’s put this to use:</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> a = observable(<span class="hljs-number">3</span>), b = observable(<span class="hljs-number">2</span>);
-<span class="hljs-keyword">var</span> c = computed(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{ <span class="hljs-keyword">return</span> a() + b(); }, [a, b]);
+<pre><code class="language-js"><span class="hljs-keyword">var</span> a = observable(<span class="hljs-number">3</span>), b = observable(<span class="hljs-number">2</span>);
+<span class="hljs-keyword">var</span> c = computed(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{ <span class="hljs-keyword">return</span> a() + b(); }, [a, b]);
 
 <span class="hljs-built_in">console</span>.log(c()); <span class="hljs-comment">// 5</span>
 a(<span class="hljs-number">10</span>);
 <span class="hljs-built_in">console</span>.log(c()); <span class="hljs-comment">// 12</span>
 b(<span class="hljs-number">7</span>);
-<span class="hljs-built_in">console</span>.log(c()); <span class="hljs-comment">// 17</span>
-</code></pre>
+<span class="hljs-built_in">console</span>.log(c()); <span class="hljs-comment">// 17</span></code></pre>
 <p>Woo hoo! Now we’re chugging!</p>
 <h2 id="binding">Binding</h2>
 <p>The second big hurdle we need to clear is data binding. Frameworks like Angular and React tackle this in big, complex, scary ways. I don’t know about you, but I don’t like scary.</p>
 <p>Let’s continue with the adding example, but now let’s represent it with text boxes:</p>
-<pre><code class="lang-html">&lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> id=<span class="hljs-string">"a-text"</span>&gt;
+<pre><code class="language-html">&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> id=<span class="hljs-string">&quot;a-text&quot;</span>&gt;
 +
-&lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> id=<span class="hljs-string">"b-text"</span>&gt;
+&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> id=<span class="hljs-string">&quot;b-text&quot;</span>&gt;
 =
-&lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> id=<span class="hljs-string">"c-text"</span> readonly&gt;
-</code></pre>
+&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> id=<span class="hljs-string">&quot;c-text&quot;</span> readonly&gt;</code></pre>
 <p>The first challenge is how to get our observables into the text boxes. Turns out, that’s pretty easy (assuming <code>a</code>, <code>b</code>, <code>c</code> from above):</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> aText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'a-text'</span>);
+<pre><code class="language-js"><span class="hljs-keyword">var</span> aText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;a-text&#x27;</span>);
 aText.value = a();
-a.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(_a)</span></span>{ aText.value = _a; });
+a.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_a</span>)</span>{ aText.value = _a; });
 
-<span class="hljs-keyword">var</span> bText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'b-text'</span>);
+<span class="hljs-keyword">var</span> bText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;b-text&#x27;</span>);
 bText.value = b();
-b.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(_b)</span></span>{ bText.value = _b; });
+b.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_b</span>)</span>{ bText.value = _b; });
 
-<span class="hljs-keyword">var</span> cText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'c-text'</span>);
+<span class="hljs-keyword">var</span> cText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;c-text&#x27;</span>);
 cText.value = c();
-c.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(_c)</span></span>{ cText.value = _c; });
-</code></pre>
+c.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">_c</span>)</span>{ cText.value = _c; });</code></pre>
 <p><em>Sigh</em> again with the repetition. Let’s clean that up:</p>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindValue</span><span class="hljs-params">(input, observable)</span> {</span>
-  input.value = observable();
-  observable.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{ <span class="hljs-title">input</span>.<span class="hljs-title">value</span> = <span class="hljs-title">observable</span><span class="hljs-params">()</span>; });</span>
+<pre><code class="language-js"><span class="hljs-keyword">function</span> bind<span class="hljs-constructor">Value(<span class="hljs-params">input</span>, <span class="hljs-params">observable</span>)</span> {
+  input.value = observable<span class="hljs-literal">()</span>;
+  observable.subscribe(<span class="hljs-keyword">function</span><span class="hljs-literal">()</span>{ input.value = observable<span class="hljs-literal">()</span>; });
 }
 
-bindValue(aText, a);
-bindValue(bText, b);
-bindValue(cText, c);
-</code></pre>
+bind<span class="hljs-constructor">Value(<span class="hljs-params">aText</span>, <span class="hljs-params">a</span>)</span>;
+bind<span class="hljs-constructor">Value(<span class="hljs-params">bText</span>, <span class="hljs-params">b</span>)</span>;
+bind<span class="hljs-constructor">Value(<span class="hljs-params">cText</span>, <span class="hljs-params">c</span>)</span>;</code></pre>
 <p>Much better! The second half of the problem is updating our values when the text boxes change. That’s pretty easy too, actually. All we need to do is listen to events on the input, and update the observable accordingly. Let’s just update our <code>bindValue</code> function:</p>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindValue</span><span class="hljs-params">(input, observable)</span> {</span>
-  input.value = observable();
-  observable.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{ <span class="hljs-title">input</span>.<span class="hljs-title">value</span> = <span class="hljs-title">observable</span><span class="hljs-params">()</span>; });</span>
+<pre><code class="language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindValue</span><span class="hljs-params">(input, observable)</span></span> {
+  <span class="hljs-built_in">input</span>.value = observable();
+  observable.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{ <span class="hljs-built_in">input</span>.value = observable(); });
 
-  input.addEventListener(<span class="hljs-string">'input'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
-    observable(input.value);
+  <span class="hljs-built_in">input</span>.addEventListener(<span class="hljs-string">&#x27;input&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span> {
+    observable(<span class="hljs-built_in">input</span>.value);
   });
-}
-</code></pre>
+}</code></pre>
 <p>Now, whenever the textbox value changes, we’ll update the observable, and when the observable changes, we update the textbox. We have lift-off!</p>
 <p>Well, actually, only in theory. We need to make a slight adjustment for this particular example - we’ve been doing math with integers, but text box values are strings. Adding two strings concatenates them, it doesn’t add their numeric values!</p>
 <p>To solve this, we can just fix our definition of <code>c</code>:</p>
-<pre><code class="lang-js"><span class="hljs-keyword">var</span> c = computed(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(a()) + <span class="hljs-built_in">parseFloat</span>(b()); }, [a, b]);
-</code></pre>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> c = computed(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(a()) + <span class="hljs-built_in">parseFloat</span>(b()); }, [a, b]);</code></pre>
 <h2 id="putting-it-all-together">Putting it all together</h2>
 <p>Here’s all of our JavaScript so far:</p>
-<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">observable</span><span class="hljs-params">(value)</span> </span>{
+<pre><code class="language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">observable</span>(<span class="hljs-params">value</span>) </span>{
   <span class="hljs-keyword">var</span> listeners = [];
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">notify</span><span class="hljs-params">(newValue)</span> </span>{
-    listeners.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(listener)</span></span>{ listener(newValue); });
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">notify</span>(<span class="hljs-params">newValue</span>) </span>{
+    listeners.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">listener</span>)</span>{ listener(newValue); });
   }
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">accessor</span><span class="hljs-params">(newValue)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">accessor</span>(<span class="hljs-params">newValue</span>) </span>{
     <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &amp;&amp; newValue !== value) {
       value = newValue;
       notify(newValue);
@@ -214,111 +201,96 @@ bindValue(cText, c);
     <span class="hljs-keyword">return</span> value;
   }
 
-  accessor.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(listener)</span> </span>{ listeners.push(listener); };
+  accessor.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">listener</span>) </span>{ listeners.push(listener); };
 
   <span class="hljs-keyword">return</span> accessor;
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">computed</span><span class="hljs-params">(calculation, dependencies)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">computed</span>(<span class="hljs-params">calculation, dependencies</span>) </span>{
   <span class="hljs-keyword">var</span> value = observable(calculation());
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">listener</span><span class="hljs-params">(v)</span> </span>{value(calculation()); }
-  dependencies.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(dependency)</span> </span>{
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">listener</span>(<span class="hljs-params">v</span>) </span>{value(calculation()); }
+  dependencies.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">dependency</span>) </span>{
     dependency.subscribe(listener);
   });
 
-  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getter</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> value(); }
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getter</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">return</span> value(); }
   getter.subscribe = value.subscribe;
 
   <span class="hljs-keyword">return</span> getter;
 }
 
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindValue</span><span class="hljs-params">(input, observable)</span> </span>{
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bindValue</span>(<span class="hljs-params">input, observable</span>) </span>{
   input.value = observable();
-  observable.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{ input.value = observable(); });
+  observable.subscribe(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{ input.value = observable(); });
 
-  input.addEventListener(<span class="hljs-string">'input'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{
+  input.addEventListener(<span class="hljs-string">&#x27;input&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
     observable(input.value);
   });
 }
 
-<span class="hljs-keyword">var</span> aText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'a-text'</span>);
-<span class="hljs-keyword">var</span> bText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'b-text'</span>);
-<span class="hljs-keyword">var</span> cText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'c-text'</span>);
+<span class="hljs-keyword">var</span> aText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;a-text&#x27;</span>);
+<span class="hljs-keyword">var</span> bText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;b-text&#x27;</span>);
+<span class="hljs-keyword">var</span> cText = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;c-text&#x27;</span>);
 
 <span class="hljs-keyword">var</span> a = observable(<span class="hljs-number">3</span>), b = observable(<span class="hljs-number">2</span>);
-<span class="hljs-keyword">var</span> c = computed(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span></span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(a()) + <span class="hljs-built_in">parseFloat</span>(b()); }, [a, b]);
+<span class="hljs-keyword">var</span> c = computed(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(a()) + <span class="hljs-built_in">parseFloat</span>(b()); }, [a, b]);
 
 bindValue(aText, a);
 bindValue(bText, b);
-bindValue(cText, c);
-</code></pre>
+bindValue(cText, c);</code></pre>
 <p>And our HTML:</p>
-<pre><code class="lang-html">&lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> id=<span class="hljs-string">"a-text"</span>&gt;
+<pre><code class="language-html">&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> id=<span class="hljs-string">&quot;a-text&quot;</span>&gt;
 +
-&lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> id=<span class="hljs-string">"b-text"</span>&gt;
+&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> id=<span class="hljs-string">&quot;b-text&quot;</span>&gt;
 =
-&lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> id=<span class="hljs-string">"c-text"</span> readonly&gt;
-</code></pre>
+&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> id=<span class="hljs-string">&quot;c-text&quot;</span> readonly&gt;</code></pre>
 <p>And, I’ll even throw in a live demo!</p>
-<p><div class="example"></p>
-<p><input type="text" id="a-text"> + <input type="text" id="b-text"> = <input type="text" id="c-text" readonly></p>
+<div class="example">
+<input type="text" id="a-text"> + <input type="text" id="b-text"> = <input type="text" id="c-text" readonly>
 <script type="text/javascript">
 function observable(value) {
   var listeners = [];
 
-  function notify(newValue) {
+<p>  function notify(newValue) {
     listeners.forEach(function(listener){ listener(newValue); });
-  }
-
-  function accessor(newValue) {
-    if (arguments.length && newValue !== value) {
+  }</p>
+<p>  function accessor(newValue) {
+    if (arguments.length &amp;&amp; newValue !== value) {
       value = newValue;
       notify(newValue);
     }
     return value;
-  }
-
-  accessor.subscribe = function(listener) { listeners.push(listener); };
-
-  return accessor;
-}
-
-function computed(calculation, dependencies) {
-  var value = observable(calculation());
-
-  function listener(v) {value(calculation()); }
+  }</p>
+<p>  accessor.subscribe = function(listener) { listeners.push(listener); };</p>
+<p>  return accessor;
+}</p>
+<p>function computed(calculation, dependencies) {
+  var value = observable(calculation());</p>
+<p>  function listener(v) {value(calculation()); }
   dependencies.forEach(function(dependency) {
     dependency.subscribe(listener);
-  });
-
-  function getter() { return value(); }
-  getter.subscribe = value.subscribe;
-
-  return getter;
-}
-
-function bindValue(input, observable) {
+  });</p>
+<p>  function getter() { return value(); }
+  getter.subscribe = value.subscribe;</p>
+<p>  return getter;
+}</p>
+<p>function bindValue(input, observable) {
   input.value = observable();
-  observable.subscribe(function(){ input.value = observable(); });
-
-  input.addEventListener('input', function() {
+  observable.subscribe(function(){ input.value = observable(); });</p>
+<p>  input.addEventListener(‘input’, function() {
     observable(input.value);
   });
-}
-
-var aText = document.getElementById('a-text');
-var bText = document.getElementById('b-text');
-var cText = document.getElementById('c-text');
-
-var a = observable(3), b = observable(2);
-var c = computed(function(){ return parseFloat(a()) + parseFloat(b()); }, [a, b]);
-
-bindValue(aText, a);
+}</p>
+<p>var aText = document.getElementById(‘a-text’);
+var bText = document.getElementById(‘b-text’);
+var cText = document.getElementById(‘c-text’);</p>
+<p>var a = observable(3), b = observable(2);
+var c = computed(function(){ return parseFloat(a()) + parseFloat(b()); }, [a, b]);</p>
+<p>bindValue(aText, a);
 bindValue(bText, b);
 bindValue(cText, c);
-</script>
-
+</script></p>
 <p>As you can see, we were able to implement a proof-of-concept two-way data-binding example using nothing but vanilla JavaScript, that’s compatible all the way back to IE 6!</p>
 <p>Not only is our solution lightweight, with the whole “framework” being less than 50 lines total, but using it is very nearly as easy and expressive as its non-observable counterparts.</p>
 <p>In fact, it turns out you can take this simple implementation very, very far. I’ll leave it as an exercise to the reader to implement, but using this code as a base, you can:</p>
@@ -332,40 +304,28 @@ bindValue(cText, c);
 </ul>
 <p>How do I know you can do this? Because this is exactly the same approach that Steve Sanderson’s (amazing, excellent, stupdendous) <a href="http://knockoutjs.com/">Knockout</a> library takes. What I listed here - observables, computeds, and DOM bindings, are the core foundations of Knockout. What I love most about it though, is that I can summarize how Knockout works in 50 lines of code, by iteration on a very simple idea.</p>
 <p>For some reference, here’s what this whole example looks like in Knockout:</p>
-<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> <span class="hljs-attribute">data-bind</span>=<span class="hljs-value">"value: a"</span>&gt;</span>
+<pre><code class="language-html">&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> data-bind=<span class="hljs-string">&quot;value: a&quot;</span>&gt;
 +
-<span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> <span class="hljs-attribute">data-bind</span>=<span class="hljs-value">"value: b"</span>&gt;</span>
+&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> data-bind=<span class="hljs-string">&quot;value: b&quot;</span>&gt;
 =
-<span class="hljs-tag">&lt;<span class="hljs-title">input</span> <span class="hljs-attribute">type</span>=<span class="hljs-value">"text"</span> <span class="hljs-attribute">data-bind</span>=<span class="hljs-value">"value: c"</span> <span class="hljs-attribute">readonly</span>&gt;</span>
+&lt;input <span class="hljs-built_in">type</span>=<span class="hljs-string">&quot;text&quot;</span> data-bind=<span class="hljs-string">&quot;value: c&quot;</span> readonly&gt;
 
-<span class="hljs-tag">&lt;<span class="hljs-title">script</span>&gt;</span><span class="javascript">
-<span class="hljs-keyword">var</span> a = ko.observable(<span class="hljs-number">3</span>);
-<span class="hljs-keyword">var</span> b = ko.observable(<span class="hljs-number">2</span>);
-<span class="hljs-keyword">var</span> c = ko.computed(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-built_in">parseFloat</span>(a()) + <span class="hljs-built_in">parseFloat</span>(b()); });
-ko.applyBindings({ a: a, b: b, c: c });
-</span><span class="hljs-tag">&lt;/<span class="hljs-title">script</span>&gt;</span>
-</code></pre>
+&lt;script&gt;
+<span class="hljs-built_in">var</span> a = ko.observable(<span class="hljs-number">3</span>);
+<span class="hljs-built_in">var</span> b = ko.observable(<span class="hljs-number">2</span>);
+<span class="hljs-built_in">var</span> c = ko.computed(function() { return parseFloat(a()) + parseFloat(b()); });
+ko.applyBindings({ <span class="hljs-symbol">a:</span> a, <span class="hljs-symbol">b:</span> b, <span class="hljs-symbol">c:</span> c });
+&lt;/script&gt;</code></pre>
 
     
     <div class="post-data">
       <div class="date">Published 2015-01-31</div>
       <ul class="tags">
-        <li><a href="/tags/reinventing-the-wheel/">reinventing-the-wheel</a></li>
-        <li><a href="/tags/knockout/">knockout</a></li>
-        <li><a href="/tags/javascript/">javascript</a></li>
+        <li><a href="/tags/[object Object]/">[object Object]</a></li>
+        <li><a href="/tags/[object Object]/">[object Object]</a></li>
+        <li><a href="/tags/[object Object]/">[object Object]</a></li>
       </ul>
     </div>
-
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-      var disqus_shortname = 'coloredsyntax';
-      (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
   </div>
   <div class="footer">
   &copy; 2015 Austin Hyde
