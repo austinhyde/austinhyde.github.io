@@ -28,7 +28,7 @@
       {{#if date}}<div class="date">Published {{formatDate date}}</div>{{/if}}
       <ul class="tags">
       {{#tags}}
-        <li><a href="/tags/{{.}}/">{{.}}</a></li>
+        <li><a href="/tags/{{slug}}/">{{name}}</a></li>
       {{/tags}}
       </ul>
     </div>
