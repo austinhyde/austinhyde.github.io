@@ -1,35 +1,36 @@
-var Metalsmith  = require('metalsmith'),
-    markdown    = require('metalsmith-markdown'),
-    templates   = require('metalsmith-templates'),
-    collections = require('metalsmith-collections'),
-    permalinks  = require('metalsmith-permalinks'),
-    less        = require('metalsmith-less'),
-    tags        = require('metalsmith-tags'),
-    excerpts    = require('metalsmith-excerpts'),
-    pagination  = require('metalsmith-pagination'),
-    hljs        = require('highlight.js'),
-    path        = require('path'),
-    fs          = require('fs'),
-    moment      = require('moment'),
-    config      = require('./config')(process.argv),
-    _           = require('lodash');
+import Metalsmith from 'metalsmith';
+import markdown from 'metalsmith-markdown';
+import templates from 'metalsmith-templates';
+import collections from 'metalsmith-collections';
+import permalinks from 'metalsmith-permalinks';
+import less from 'metalsmith-less';
+import tags from 'metalsmith-tags';
+import excerpts from 'metalsmith-excerpts';
+import pagination from 'metalsmith-pagination';
+import debug from 'metalsmith-debug';
+import hljs from 'highlight.js';
+import * as path from 'path';
+import {readdirSync} from 'fs';
+import {fileURLToPath} from 'url';
 
-var partials = {};
-_.each(fs.readdirSync(__dirname + '/templates/partials'), function(f) {
-  var b = path.basename(f, path.extname(f));
-  partials[b] = 'partials/' + b; 
-});
+import helpers from './helpers.js';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 Metalsmith(__dirname)
+  .source('./src')
+  .destination('./build')
+  .clean(true)
+  // assign basename metadata
+  .use((files, metalsmith, done) => {
+    Object.keys(files).forEach(fname => {
+      files[fname].basename = path.basename(fname, path.extname(fname))
+    });
+    done();
+  })
   .use(collections({
-    posts: {
-      pattern: 'content/posts/*.md'
-    },
-    projects: {
-      pattern: 'content/projects/*.md'
-    }
+    posts: 'content/posts/*.md',
+    projects: 'content/projects/*.md',
   }))
-  .use(assignBasenames)
   .use(useTemplate({
     posts: 'post.hbt',
     projects: 'post.hbt',
@@ -37,56 +38,36 @@ Metalsmith(__dirname)
   }))
   .use(markdown({
     smartypants: true,
-    highlight: function (code, lang, callback) {
+    highlight: (code, lang, callback) => {
       return hljs.highlightAuto(code).value;
     }
   }))
   .use(excerpts())
-  .use(tags({
-    handle: 'tags',
-    path: 'tags',
-    template: 'post-list.hbt'
-  }))
   .use(permalinks({
     pattern: ':collection/:basename',
-    relative: false
+    relative: false,
+  }))
+  .use(tags({
+    handle: 'tags',
+    template: 'post-list.hbt',
   }))
   .use(templates({
     engine: 'handlebars',
     directory: 'templates',
-    partials: partials,
-    helpers: {
-      json: JSON.stringify,
-      formatDate: function(date) {
-        // sigh
-        date.setHours(date.getHours()+5);
-        return moment(date).format('YYYY-MM-DD');
-      },
-      debug: function(obj) {
-        obj.contents = '...';
-        obj.stats = '...';
-        return JSON.stringify(obj);
-      },
-      activePage: function(page) {
-        if (path.basename(this.path) == page || _.indexOf(this.collection, page) !== -1) {
-          return 'active';
-        }
-        return '';
-      },
-      link: function(path) {
-        return config.baseUrl + '/' + path;
-      },
-      or: function() {
-        return _.any(arguments);
-      },
-      setAndFalse: function(x) {
-        return x === false;
-      }
-    }
+    partials: readdirSync(__dirname + '/templates/partials')
+      .reduce((partials, f) => {
+        var b = path.basename(f, path.extname(f));
+        partials[b] = 'partials/' + b;
+        return partials;
+      }, {}),
+    helpers: helpers
   }))
   // .use(function(files, ms, done){ _.each(files, function(f, n) { console.log(n, _.omit(f, 'stats', 'contents')); }); done(); })
   .use(less())
-  .destination('./build')
+  // .use(debug())
+  // .use((files) => {
+  //   console.log(files)
+  // })
   .build(function(err) {
     console.log('done');
     if (err) console.dir(err);
@@ -94,21 +75,13 @@ Metalsmith(__dirname)
   });
 
 function useTemplate(config) {
-  return function(files, metalsmith, done) {
-    _.each(files, function(f, fname) {
-      var c = _.find(f.collection, _.partial(_.has, config));
+  return (files, metalsmith, done) => {
+    Object.values(files).forEach(f => {
+      const c = f.collection.find(c => c in config);
       if (!f.template && c) {
-        f.template = config[c];
+        f.template = config[c]
       }
     });
     done();
   };
-}
-
-function assignBasenames(files, metalsmith, done) {
-  _.each(files, function(f, fname) {
-    f.basename = path.basename(fname, path.extname(fname));
-    // console.log(f);
-  });
-  done();
 }

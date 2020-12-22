@@ -13,7 +13,7 @@
 <h3>Recent Posts</h3>
 <dl class="post-list">
 {{#each (lookup collections 'posts')}}
-  <dt><a href="{{link path}}">{{title}}</a></dt>
+  <dt><a href="/{{path}}">{{title}}</a></dt>
   <dd>{{{excerpt}}}</dd>
 {{/each}}
 </dl>

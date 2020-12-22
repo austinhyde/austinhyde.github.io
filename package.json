@@ -1,0 +1,37 @@
+{
+  "name": "austinhyde.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "node index.js",
+    "publish": "if [[ -z $(git status -s) ]]; then git subtree push --prefix build origin pages; else echo 'need to commit'; fi",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/austinhyde/austinhyde.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/austinhyde/austinhyde.github.io/issues"
+  },
+  "homepage": "https://github.com/austinhyde/austinhyde.github.io#readme",
+  "devDependencies": {
+    "handlebars": "^4.7.6",
+    "highlight.js": "^10.4.1",
+    "metalsmith": "^2.3.0",
+    "metalsmith-collections": "^0.9.0",
+    "metalsmith-debug": "^1.2.0",
+    "metalsmith-excerpts": "^1.4.1",
+    "metalsmith-less": "^2.0.0",
+    "metalsmith-markdown": "^1.3.0",
+    "metalsmith-pagination": "^1.5.0",
+    "metalsmith-permalinks": "^2.2.0",
+    "metalsmith-tags": "^2.1.0",
+    "metalsmith-templates": "^0.7.0",
+    "moment": "^2.29.1"
+  }
+}
