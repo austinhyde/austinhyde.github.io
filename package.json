@@ -22,7 +22,7 @@
   "homepage": "https://github.com/austinhyde/austinhyde.github.io#readme",
   "devDependencies": {
     "concurrently": "^5.3.0",
-    "handlebars": "^4.7.6",
+    "handlebars": "^4.7.7",
     "highlight.js": "^10.4.1",
     "metalsmith": "^2.3.0",
     "metalsmith-collections": "^0.9.0",
