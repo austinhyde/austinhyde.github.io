@@ -34,7 +34,7 @@
     "metalsmith-permalinks": "^2.2.0",
     "metalsmith-tags": "^2.1.0",
     "metalsmith-templates": "^0.7.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "onchange": "^7.1.0",
     "serve": "^11.3.2"
   }
